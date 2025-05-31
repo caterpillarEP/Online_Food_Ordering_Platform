@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login with OTP</h2>
+        <input type="email" id="email" placeholder="Enter your email" required>
+        <button onclick="sendOtp()">Send OTP</button>
+        <input type="text" id="otp" placeholder="Enter OTP" required disabled>
+        <button onclick="verifyOtp()" id="verifyBtn" disabled>Verify OTP</button>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        function sendOtp() {
+            let email = document.getElementById("email").value;
+            if (!email) {
+                alert("Please enter your email.");
+                return;
+            }
+            fetch('/index/send-otp?email=' + encodeURIComponent(email), {
+                method: 'POST'
+            }).then(response => response.text())
+              .then(data => {
+                  document.getElementById("message").innerText = data;
+                  document.getElementById("otp").disabled = false;
+                  document.getElementById("verifyBtn").disabled = false;
+              })
+              .catch(error => console.error('Error:', error));
+        }
+
+        function verifyOtp() {
+            let email = document.getElementById("email").value;
+            let otp = document.getElementById("otp").value;
+            if (!otp) {
+                alert("Please enter OTP.");
+                return;
+            }
+
+            fetch(`/index/verify-otp?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`, {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) return response.text();
+                throw new Error("Invalid OTP");
+            }).then(data => {
+                document.getElementById("message").innerText = data;
+
+                // Redirect to index.html after successful OTP verification
+                window.location.href = "/index.html"; // Redirect to index.html
+            }).catch(error => {
+                document.getElementById("message").innerText = error.message;
+            });
+			
+			// Save email to localStorage upon successful verification
+			            localStorage.setItem("userEmail", email);
+        }
+		
+		// Clear cart when user lands on login page
+				       window.onload = function() {
+				           // Clear cart in localStorage
+				           localStorage.removeItem("cart");
+				           // Optionally, also reset any sessionStorage flags
+				           sessionStorage.removeItem("isLoggedOut");
+				       };
+			   
+    </script>
+</body>
+</html>
+
+
