@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veg Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8cc;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 900px;
+            margin: auto;
+        }
+        .food-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 250px;
+        }
+        .food-item img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+        }
+        .price {
+            font-size: 18px;
+            color: #ff5733;
+        }
+        .button {
+            padding: 8px 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #218838;
+        }
+        .cart {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .go-to-bag {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .go-to-bag:hover {
+            background-color: #0056b3;
+        }
+		
+		/* Add log-out button style */
+		        .logout-btn {
+		            position: absolute;
+		            top: 20px;
+		            right: 20px;
+		            padding: 10px 15px;
+		            background-color: #dc3545;
+		            color: white;
+		            border: none;
+		            cursor: pointer;
+		            border-radius: 5px;
+		        }
+		        .logout-btn:hover {
+		            background-color: #c82333;
+		        }
+    </style>
+</head>
+<body>
+	<button class="logout-btn" onclick="logout()">Log Out</button> <!-- Log out button -->
+	
+    <h2>Veg Menu</h2>
+    <div class="container">
+        <div class="food-item">
+            <img src="assets\img\idily.jpg" alt="Idli">
+            <h3>Idli</h3>
+            <p class="price">Price: ₹50</p>
+            <button class="button" onclick="addToCart('Idli', 50)">Add to Cart</button>
+        </div>
+        <div class="food-item">
+            <img src="assets\img\dosa.jpg" alt="Dosa">
+            <h3>Dosa</h3>
+            <p class="price">Price: ₹60</p>
+            <button class="button" onclick="addToCart('Dosa', 60)">Add to Cart</button>
+        </div>
+        <div class="food-item">
+            <img src="assets\img\pongal.jpg" alt="Pongal">
+            <h3>Pongal</h3>
+            <p class="price">Price: ₹65</p>
+            <button class="button" onclick="addToCart('Pongal', 70)">Add to Cart</button>
+        </div>
+        <div class="food-item">
+            <img src="assets\img\veg biriyani.jpg" alt="Veg Biryani">
+            <h3>Veg Biryani</h3>
+            <p class="price">Price: ₹100</p>
+            <button class="button" onclick="addToCart('Veg Biryani', 100)">Add to Cart</button>
+        </div>
+        <div class="food-item">
+            <img src="assets\img\gobi rice.jpg" alt="Gobi Rice">
+            <h3>Gobi Rice</h3>
+            <p class="price">Price: ₹80</p>
+            <button class="button" onclick="addToCart('Gobi Rice', 80)">Add to Cart</button>
+        </div>
+        <div class="food-item">
+            <img src="assets\img\paneer buter masala.jpg" alt="Paneer Butter Masala">
+            <h3>Paneer Butter Masala</h3>
+            <p class="price">Price: ₹120</p>
+            <button class="button" onclick="addToCart('Paneer Butter Masala', 120)">Add to Cart</button>
+        </div>
+    </div>
+<h2>Non-Veg Menu</h2>
+    <div class="container">
+        <div class="food-item">
+            <img src="assets\img\chicken cuury.jpg" alt="Chicken Dish">
+            <h3>Chicken Curry</h3>
+            <p class="price">Price: ₹250</p>
+            <button class="button" onclick="addToCart('Chicken Curry', 250)">Add to Cart</button>
+        </div>
+        <div class="food-item">
+            <img src="assets\img\mutton.jpg" alt="Mutton Dish">
+            <h3>Mutton Biryani</h3>
+            <p class="price">Price: ₹350</p>
+            <button class="button" onclick="addToCart('Mutton Biryani', 350)">Add to Cart</button>
+        </div>
+        <div class="food-item">
+            <img src="assets\img\fishfry.jpg" alt="Fish Dish">
+            <h3>Fish Fry</h3>
+            <p class="price">Price: ₹200</p>
+            <button class="button" onclick="addToCart('Fish Fry', 200)">Add to Cart</button>
+        </div>
+        <div class="food-item">
+            <img src="assets\img\pawarn curry.jpg" alt="Prawns Dish">
+            <h3>Prawns Masala</h3>
+            <p class="price">Price: ₹300</p>
+            <button class="button" onclick="addToCart('Prawns Masala', 300)">Add to Cart</button>
+        </div>
+        <div class="food-item">
+            <img src="assets\img\egg curry.jpg" alt="Egg Dish">
+            <h3>Egg Curry</h3>
+            <p class="price">Price: ₹150</p>
+            <button class="button" onclick="addToCart('Egg Curry', 150)">Add to Cart</button>
+        </div>
+        <div class="food-item">
+            <img src="assets\img\plate2.jpg" alt="Honey chicken">
+            <h3>Honey Chicken</h3>
+            <p class="price">Price: ₹220</p>
+            <button class="button" onclick="addToCart('Honey Chicken', 220)">Add to Cart</button>
+        </div>
+    </div>
+
+ 
+
+    
+    <div class="cart">
+        <h3>Cart</h3>
+        <ul id="cart-list"></ul>
+        <p><strong>Total:</strong> ₹<span id="total-price">0</span></p>
+        <button class="go-to-bag" onclick="goToBag()">Go to Bag</button>
+    </div>
+    
+	<script>
+	    function addToCart(item, price) {
+	        // Retrieve existing cart from localStorage or create a new array
+	        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+	        cart.push({ item, price });
+
+	        // Save the updated cart back to localStorage
+	        localStorage.setItem("cart", JSON.stringify(cart));
+
+	        // Update the cart display
+	        updateCart();
+	    }
+
+	    function updateCart() {
+	        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+	        let cartList = document.getElementById("cart-list");
+	        let totalElement = document.getElementById("total-price");
+	        let total = 0;
+	        cartList.innerHTML = "";
+
+	        cart.forEach(entry => {
+	            let listItem = document.createElement("li");
+	            listItem.textContent = `${entry.item} - ₹${entry.price}`;
+	            cartList.appendChild(listItem);
+	            total += entry.price;
+	        });
+
+	        totalElement.textContent = total;
+	    }
+
+	    function goToBag() {
+	        window.location.href = "cart.html";  // Just navigate to the cart page
+	    }
+		
+		// Log out function
+		        function logout() {
+		            if (confirm("Are you sure you want to log out?")) {
+		                // Clear cart items from localStorage
+		                localStorage.removeItem("cart");
+		                // Redirect to login page
+		                window.location.href = "login.html";
+		            }
+		        }
+
+		        // Clear cart items if the user navigates back from the login page
+		        window.onpopstate = function() {
+		            localStorage.removeItem("cart");
+		        };
+	</script>
+
+</body>
+</html>

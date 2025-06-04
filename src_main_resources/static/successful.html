@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    
+    .container {
+      text-align: center;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      width: 400px;
+      font-size: 18px;
+    }
+    
+    .checkmark {
+      font-size: 80px;
+      color: #4caf50;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      color: #4caf50;
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+    
+    .message {
+      color: #555;
+      margin-bottom: 30px;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: #4caf50;
+      color: white;
+      padding: 12px 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+	<div class="container">
+	    <div class="checkmark">✔</div>
+	    <h1>Payment Successful</h1>
+	    <p class="message">Your order has been successfully processed. Thank you for your purchase!
+			               
+		</p>
+	    <a href="index.html">
+	      <button class="btn">Go to Dashboard</button>
+	    </a>
+	    <div class="footer">Any Order Related Query Contact - 6379416636 Directly</div>
+	</div>
+
+	<script>
+	  document.addEventListener("DOMContentLoaded", function () {
+	    // Retrieve data from local storage
+	    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+	    const paymentData = JSON.parse(localStorage.getItem("paymentData")) || {};
+	    const userEmail = localStorage.getItem("userEmail") || "";
+
+	    // Prepare data for the backend
+	    const requestData = {
+	      userEmail: userEmail,
+	      userName: paymentData.userName,
+	      userAddress: paymentData.userAddress,
+	      mobileNumber: paymentData.mobileNumber,
+	      cartItems: cart
+	    };
+
+	    // Send data to backend
+	    fetch("http://localhost:8080/api/payment/save", {
+	      method: "POST",
+	      headers: {
+	        "Content-Type": "application/json"
+	      },
+	      body: JSON.stringify(requestData)
+	    })
+	      .then(response => response.json())
+	      .then(data => {
+	        console.log("Payment data saved:", data);
+			
+	        // Clear local storage after successful submission
+	        localStorage.removeItem("cart");
+	        localStorage.removeItem("paymentData");
+	       
+	      })
+	      .catch(error => console.error("Error saving payment data:", error));
+	  });
+	  
+	  // Clear the paymentData from local storage when the page loads
+	      document.addEventListener("DOMContentLoaded", function() {
+	        localStorage.removeItem("paymentData");
+	        console.log("Payment data cleared from local storage.");
+	      });
+	  
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Section</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        
+        h2, h3 {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #28a745;
+            background-color: #ffffff;
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .payment-methods button {
+            background-color: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            cursor: pointer;
+            border-radius: 30px;
+            font-size: 16px;
+            width: 48%;
+            transition: background-color 0.3s;
+        }
+
+        .payment-methods button:hover {
+            background-color: #218838;
+        }
+
+        .payment-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .payment-form .confirm-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .payment-form .confirm-button:hover {
+            background-color: #0056b3;
+        }
+
+        .payment-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .payment-header h2 {
+            font-size: 28px;
+        }
+
+        /* QR Code and UPI details */
+        #upi-details {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #upi-details img {
+            width: 200px;
+            height: 200px;
+            margin-top: 10px;
+        }
+
+        /* Center the button below QR */
+        #upi-details .confirm-button {
+            display: block;
+            margin: 20px auto 0;
+            width: 50%;
+        }
+
+        /* Modal Styles for Payment Success */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .modal-content button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .modal-content button:hover {
+            background-color: #218838;
+        }
+
+        /* Error Message Styles */
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+		/* Back Button */
+		.back-button {
+		    display: inline-block;
+		    padding: 10px 20px;
+		    background-color: #6c757d;
+		    color: white;
+		    border-radius: 30px;
+		    font-size: 16px;
+		    margin-top: 10px;
+		    text-decoration: none;
+		    cursor: pointer;
+		}
+
+		.back-button:hover {
+		    background-color: #5a6268;
+		}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="payment-header">
+            <h2>Payment Details</h2>
+            <p>Complete your payment to proceed with the order.</p>
+        </div>
+
+        <!-- User Name, Address, and Mobile Number Form -->
+        <div class="form-group">
+            <label for="user-name">Your Name:</label>
+            <input type="text" id="user-name" placeholder="Enter your name">
+            <div id="name-error" class="error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Delivery Address:</label>
+            <input type="text" id="address" placeholder="Enter your delivery address">
+            <div id="address-error" class="error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="mobile-number">Mobile Number:</label>
+            <input type="text" id="mobile-number" placeholder="Enter your mobile number">
+            <div id="mobile-error" class="error"></div>
+        </div>
+
+        <!-- Payment Method Selection -->
+        <h3>Select Payment Method</h3>
+        <div class="payment-methods">
+            <button id="cod-btn" onclick="selectPaymentMethod('COD')" disabled>Cash on Delivery</button>
+            <button id="upi-btn" onclick="selectPaymentMethod('UPI')" disabled>UPI Payment</button>
+        </div>
+
+        <!-- COD Confirmation -->
+        <div id="cod-confirm" class="payment-form">
+            <p>Are you sure you want to choose Cash on Delivery?</p>
+            <button class="confirm-button" onclick="confirmCOD()">Confirm Order</button>
+        </div>
+
+        <!-- UPI Details Form -->
+        <div id="upi-form" class="payment-form">
+            <button class="confirm-button" onclick="showUPIDetails()">Proceed with UPI Payment</button>
+        </div>
+
+        <!-- UPI Details -->
+        <div id="upi-details">
+            <p>Scan this QR code or pay using the UPI ID below:</p>
+            <p>UPI ID: happyhari628-5@okaxis</p>
+            <img src="/assets/img/scanner.jpg" alt="UPI QR Code">
+            <button class="confirm-button" onclick="storePaymentDataAndShowSuccess()">Click To Place Order</button>
+        </div>
+
+        <!-- Back Button with Confirmation -->
+        <a href="#" class="back-button" onclick="confirmBack()">Back to Home</a>
+    </div>
+
+    <!-- Modal for Payment Success -->
+    <div id="payment-success-modal" class="modal">
+        <div class="modal-content">
+			
+			<h3>Order Successful!</h3>
+			<p>Your order has been placed successfully. Thank you for your order!</p>
+
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+		
+		function confirmCOD() {
+		    // Simulate the action of "Click To Place Order" after confirming COD.
+		    storePaymentDataAndShowSuccess();  // Call the existing function to store data and show success
+		}
+
+        // Validate User Details before allowing payment method selection
+        function validateUserDetails() {
+            var userName = document.getElementById('user-name').value;
+            var userAddress = document.getElementById('address').value;
+            var mobileNumber = document.getElementById('mobile-number').value;
+            var isValid = true;
+
+            // Clear previous errors
+            document.getElementById('name-error').innerText = '';
+            document.getElementById('address-error').innerText = '';
+            document.getElementById('mobile-error').innerText = '';
+
+            // Validate Name
+            if (userName.trim() === '') {
+                document.getElementById('name-error').innerText = 'Name is required.';
+                isValid = false;
+            }
+
+            // Validate Address
+            if (userAddress.trim().length < 12) {
+                document.getElementById('address-error').innerText = 'Address must be at least 12 characters.';
+                isValid = false;
+            }
+
+            // Validate Mobile Number
+            if (!/^\d{10}$/.test(mobileNumber)) {
+                document.getElementById('mobile-error').innerText = 'Mobile number must be 10 digits.';
+                isValid = false;
+            }
+
+            // Enable or Disable payment buttons based on validity
+            document.getElementById('cod-btn').disabled = !isValid;
+            document.getElementById('upi-btn').disabled = !isValid;
+
+            return isValid;
+        }
+
+        // Store Payment Data and Show Success
+        function storePaymentDataAndShowSuccess() {
+            if (!validateUserDetails()) return;
+
+            // Collect user payment details
+            var userName = document.getElementById('user-name').value;
+            var userAddress = document.getElementById('address').value;
+            var mobileNumber = document.getElementById('mobile-number').value;
+
+            // Prepare data to be saved in local storage
+            var paymentData = {
+                userName: userName,
+                userAddress: userAddress,
+                mobileNumber: mobileNumber,
+            };
+
+            // Store the payment details in local storage
+            localStorage.setItem('paymentData', JSON.stringify(paymentData));
+
+            // Show the success modal
+            document.getElementById('payment-success-modal').style.display = 'flex';
+        }
+
+        function selectPaymentMethod(method) {
+            document.getElementById('cod-confirm').style.display = (method === 'COD') ? 'block' : 'none';
+            document.getElementById('upi-form').style.display = (method === 'UPI') ? 'block' : 'none';
+        }
+
+        function showUPIDetails() {
+            document.getElementById('upi-form').style.display = 'none';
+            document.getElementById('upi-details').style.display = 'block';
+        }
+
+        function showPaymentSuccess() {
+            document.getElementById('payment-success-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('payment-success-modal').style.display = 'none';
+            window.location.href = "successful.html";
+        }
+
+        function confirmBack() {
+            if (confirm("If you go back to home, your cart details will be erased. Do you want to continue?")) {
+                window.location.href = "index.html";
+            }
+        }
+
+        // Initial validation on input change
+        document.getElementById('user-name').addEventListener('input', validateUserDetails);
+        document.getElementById('address').addEventListener('input', validateUserDetails);
+        document.getElementById('mobile-number').addEventListener('input', validateUserDetails);
+    </script>
+</body>
+</html>
